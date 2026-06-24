@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Apartment Management</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f4f8; color: #222; }
+    .navbar { background: #1a56a0; color: white; padding: 14px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar h1 { font-size: 1.3rem; }
+    .navbar a { color: white; text-decoration: none; margin-left: 20px; font-size: 0.95rem; }
+    .navbar a:hover { text-decoration: underline; }
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    h2 { margin-bottom: 20px; color: #1a56a0; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
+    .stat-card { background: white; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 4px solid #1a56a0; }
+    .stat-card .number { font-size: 2rem; font-weight: bold; color: #1a56a0; }
+    .stat-card .label { color: #666; margin-top: 4px; font-size: 0.9rem; }
+    .card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #1a56a0; color: white; padding: 10px; text-align: left; }
+    td { padding: 10px; border-bottom: 1px solid #eee; }
+    tr:hover td { background: #f5f8ff; }
+    .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+    .badge-paid { background: #d4edda; color: #155724; }
+    .badge-pending { background: #fff3cd; color: #856404; }
+    .flash { background: #d4edda; color: #155724; padding: 10px 20px; border-radius: 6px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <h1>🏢 Apartment Management System</h1>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/tenants">Tenants</a>
+      <a href="/units">Units</a>
+      <a href="/leases">Leases</a>
+      <a href="/payments">Payments</a>
+      <a href="/maintenance">Maintenance</a>
+    </nav>
+  </div>
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <h2>Dashboard</h2>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="number">{{ total_units }}</div>
+        <div class="label">Total Units</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">{{ occupied }}</div>
+        <div class="label">Occupied</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">{{ total_tenants }}</div>
+        <div class="label">Tenants</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">{{ pending_maintenance }}</div>
+        <div class="label">Pending Maintenance</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Recent Payments</h2>
+      <table>
+        <tr><th>Tenant</th><th>Amount</th><th>Date</th><th>Method</th><th>Status</th></tr>
+        {% for p in recent_payments %}
+        <tr>
+          <td>{{ p.tenant.name }}</td>
+          <td>₹{{ p.amount }}</td>
+          <td>{{ p.payment_date }}</td>
+          <td>{{ p.method }}</td>
+          <td><span class="badge badge-{{ p.status.lower() }}">{{ p.status }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="text-align:center;color:#aaa;">No payments yet.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</body>
+</html>
