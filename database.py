@@ -3,7 +3,6 @@ from datetime import date
 
 db = SQLAlchemy()
 
-
 class Unit(db.Model):
     __tablename__ = 'units'
     id = db.Column(db.Integer, primary_key=True)
